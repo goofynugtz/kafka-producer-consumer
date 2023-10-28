@@ -8,6 +8,7 @@ import (
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/gin-gonic/gin"
+	"github.com/goofynugtz/kafka-producer-consumer/pkg/config"
 	database "github.com/goofynugtz/kafka-producer-consumer/pkg/db"
 	models "github.com/goofynugtz/kafka-producer-consumer/pkg/models"
 	p "github.com/goofynugtz/kafka-producer-consumer/pkg/producer"
@@ -43,10 +44,8 @@ func RecieveProduct() gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "User item was not created"})
 			return
 		}
-		// WARN: changes Topic to env
-		topic := "kpc"
 		if err := p.KafkaProducer.Produce(&kafka.Message{
-			TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
+			TopicPartition: kafka.TopicPartition{Topic: &config.KafkaTopic, Partition: kafka.PartitionAny},
 			Value:          product.ID[:],
 		},
 			p.DeliveryChan,
