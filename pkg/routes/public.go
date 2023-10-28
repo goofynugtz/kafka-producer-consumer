@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	controllers "github.com/goofynugtz/kafka-producer-consumer/controllers"
+	controllers "github.com/goofynugtz/kafka-producer-consumer/pkg/controllers"
 )
 
 // all routes start with "/"

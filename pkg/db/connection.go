@@ -11,7 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func DBInstantiate() *mongo.Client {
+func DatabaseInit() *mongo.Client {
 	if err := godotenv.Load(); err != nil {
 		fmt.Println("No .env file found")
 	}
@@ -24,7 +24,7 @@ func DBInstantiate() *mongo.Client {
 	return client
 }
 
-var Client *mongo.Client = DBInstantiate()
+var Client *mongo.Client = DatabaseInit()
 
 func OpenCollection(client *mongo.Client, collectionName string) *mongo.Collection {
 	var collection *mongo.Collection = client.Database("pc-kafka").Collection(collectionName)

@@ -6,15 +6,16 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/gin-gonic/gin"
-	database "github.com/goofynugtz/kafka-producer-consumer/db"
-	models "github.com/goofynugtz/kafka-producer-consumer/models"
+	database "github.com/goofynugtz/kafka-producer-consumer/pkg/db"
+	models "github.com/goofynugtz/kafka-producer-consumer/pkg/models"
+	p "github.com/goofynugtz/kafka-producer-consumer/pkg/producer"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 var productCollection *mongo.Collection = database.OpenCollection(database.Client, "products")
-// var userCollection *mongo.Collection = database.OpenCollection(database.Client, "users")
 
 func RecieveProduct() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -42,6 +43,28 @@ func RecieveProduct() gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "User item was not created"})
 			return
 		}
+		// WARN: changes Topic to env
+		topic := "kpc"
+		if err := p.KafkaProducer.Produce(&kafka.Message{
+			TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
+			Value:          product.ID[:],
+		},
+			p.DeliveryChan,
+		); err != nil {
+			fmt.Printf("Could not pass product_id %v due to %v", product.ID, err)
+		}
+
+		// e := <-p.DeliveryChan
+		// m := e.(*kafka.Message)
+
+		// if m.TopicPartition.Error != nil {
+		// 	fmt.Printf("Delivery failed: %v\n", m.TopicPartition.Error)
+		// } else {
+		// 	fmt.Printf("Delivered message to topic %s [%d] at offset %v\n",
+		// 		*m.TopicPartition.Topic, m.TopicPartition.Partition, m.TopicPartition.Offset)
+		// }
+
 		c.JSON(http.StatusOK, resultInsertionNumber)
+
 	}
 }

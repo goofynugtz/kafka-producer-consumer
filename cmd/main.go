@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	routes "github.com/goofynugtz/kafka-producer-consumer/routes"
+	routes "github.com/goofynugtz/kafka-producer-consumer/pkg/routes"
 	"github.com/joho/godotenv"
 )
 
@@ -18,7 +18,7 @@ func main() {
 	if port == "" {
 		port = "9000"
 	}
-	
+
 	router := gin.Default()
 	router.Use(cors.Default())
 
