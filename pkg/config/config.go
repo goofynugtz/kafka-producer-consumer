@@ -5,6 +5,9 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+	"go.mongodb.org/mongo-driver/mongo"
+	database "github.com/goofynugtz/kafka-producer-consumer/pkg/db"
+
 )
 
 func GetTopic() string {
@@ -16,3 +19,4 @@ func GetTopic() string {
 }
 
 var KafkaTopic string = GetTopic()
+var ProductCollection *mongo.Collection = database.OpenCollection(database.Client, "products")

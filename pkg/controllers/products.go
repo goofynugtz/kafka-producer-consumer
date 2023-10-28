@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
@@ -9,14 +10,11 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/gin-gonic/gin"
 	"github.com/goofynugtz/kafka-producer-consumer/pkg/config"
-	database "github.com/goofynugtz/kafka-producer-consumer/pkg/db"
+	"github.com/goofynugtz/kafka-producer-consumer/pkg/dao"
 	models "github.com/goofynugtz/kafka-producer-consumer/pkg/models"
 	p "github.com/goofynugtz/kafka-producer-consumer/pkg/producer"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 )
-
-var productCollection *mongo.Collection = database.OpenCollection(database.Client, "products")
 
 func RecieveProduct() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -38,32 +36,30 @@ func RecieveProduct() gin.HandlerFunc {
 		product.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 		product.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 
-		resultInsertionNumber, insertErr := productCollection.InsertOne(ctx, product)
-		if insertErr != nil {
-			fmt.Println(insertErr)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "User item was not created"})
-			return
+		// fmt.Println(">> api", product.ID)
+
+		if err := dao.AddProduct(&ctx, &product); err != nil {
+			fmt.Println(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Product item was not created"})
 		}
+		productJSON, _ := json.Marshal(product)
 		if err := p.KafkaProducer.Produce(&kafka.Message{
 			TopicPartition: kafka.TopicPartition{Topic: &config.KafkaTopic, Partition: kafka.PartitionAny},
-			Value:          product.ID[:],
+			Value:          productJSON,
 		},
 			p.DeliveryChan,
 		); err != nil {
 			fmt.Printf("Could not pass product_id %v due to %v", product.ID, err)
 		}
 
-		// e := <-p.DeliveryChan
-		// m := e.(*kafka.Message)
-
-		// if m.TopicPartition.Error != nil {
-		// 	fmt.Printf("Delivery failed: %v\n", m.TopicPartition.Error)
-		// } else {
-		// 	fmt.Printf("Delivered message to topic %s [%d] at offset %v\n",
-		// 		*m.TopicPartition.Topic, m.TopicPartition.Partition, m.TopicPartition.Offset)
-		// }
-
-		c.JSON(http.StatusOK, resultInsertionNumber)
-
+		e := <-p.DeliveryChan
+		m := e.(*kafka.Message)
+		if m.TopicPartition.Error != nil {
+			fmt.Printf("Delivery failed: %v\n", m.TopicPartition.Error)
+		} else {
+			fmt.Printf("Delivered message to topic %s [%d] at offset %v\n",
+				*m.TopicPartition.Topic, m.TopicPartition.Partition, m.TopicPartition.Offset)
+		}
+		c.JSON(http.StatusOK, gin.H{"message": "Product item created"})
 	}
 }

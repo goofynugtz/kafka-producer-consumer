@@ -5,7 +5,6 @@ import (
 	controllers "github.com/goofynugtz/kafka-producer-consumer/pkg/controllers"
 )
 
-// all routes start with "/"
 func PublicRoutes(incomingRoutes *gin.RouterGroup) {
 	incomingRoutes.POST("/recieve", controllers.RecieveProduct())
 }

@@ -29,4 +29,5 @@ func main() {
 
 	routes.PublicRoutes(public)
 	router.Run(":" + port)
+	
 }
