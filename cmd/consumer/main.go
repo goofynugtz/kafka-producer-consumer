@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
-	"github.com/goofynugtz/kafka-producer-consumer/pkg/config"
+	"github.com/goofynugtz/kafka-producer-consumer/config"
 	"github.com/goofynugtz/kafka-producer-consumer/pkg/dao"
 	"github.com/goofynugtz/kafka-producer-consumer/pkg/helpers"
 	"github.com/goofynugtz/kafka-producer-consumer/pkg/models"

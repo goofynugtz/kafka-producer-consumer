@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/goofynugtz/kafka-producer-consumer/pkg/config"
+	"github.com/goofynugtz/kafka-producer-consumer/config"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )

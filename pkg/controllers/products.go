@@ -9,7 +9,7 @@ import (
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/gin-gonic/gin"
-	"github.com/goofynugtz/kafka-producer-consumer/pkg/config"
+	"github.com/goofynugtz/kafka-producer-consumer/config"
 	"github.com/goofynugtz/kafka-producer-consumer/pkg/dao"
 	models "github.com/goofynugtz/kafka-producer-consumer/pkg/models"
 	p "github.com/goofynugtz/kafka-producer-consumer/pkg/producer"
