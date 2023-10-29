@@ -3,6 +3,8 @@
 Prerequisite: Docker and Golang compiler  
 Ensure to have docker up && running.
 
+Exposed .env config for the sake of project submission.
+
 1. To start working with the repository, start the zookeeper and kafka-server containers
 
 ```bash
