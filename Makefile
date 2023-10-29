@@ -14,4 +14,5 @@ consumer:
 	./bin/consumer
 
 clean:
-	rm -rf ./bin
+	rm -rf ./bin ./images
+

@@ -8,11 +8,11 @@ import (
 
 type Product struct {
 	ID               primitive.ObjectID `json:"_id" bson:"_id"`
-	Name             string             `json:"name"`
-	Description      string             `json:"description"`
-	Images           []string           `json:"images"`
-	Price            int                `json:"price"`
-	CompressedImages []string           `json:"compresses_images"`
-	CreatedAt        time.Time          `json:"created_at"`
-	UpdatedAt        time.Time          `json:"updated_at"`
+	Name             string             `json:"name" bson:"name"`
+	Description      string             `json:"description" bson:"description"`
+	Images           []string           `json:"images" bson:"images"`
+	Price            int                `json:"price" bson:"price"`
+	CompressedImages []string           `json:"compressed_images" bson:"compressed_images"`
+	CreatedAt        time.Time          `json:"created_at" bson:"created_at"`
+	UpdatedAt        time.Time          `json:"updated_at" bson:"updated_at"`
 }
