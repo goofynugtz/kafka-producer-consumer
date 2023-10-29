@@ -30,7 +30,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err := consumer.SubscribeTopics([]string{config.KafkaTopic}, nil); err != nil {
+	if err := consumer.SubscribeTopics([]string{config.Env.KAFKA_TOPIC}, nil); err != nil {
 		log.Fatal(err)
 	}
 	run := true

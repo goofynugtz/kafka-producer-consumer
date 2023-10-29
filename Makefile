@@ -15,4 +15,3 @@ consumer:
 
 clean:
 	rm -rf ./bin ./images
-

@@ -8,6 +8,7 @@ Ensure to have docker up && running.
 ```bash
 make kafka
 ```
+In-case `broker` container fails to start, do `sudo docker container rm zookeeper broker` to remove pre-existing container images and build again.
 
 2. Build api and consumer bin files
 
@@ -26,6 +27,7 @@ make deploy
 ```bash
 make consumer
 ```
+This can result in error if the topic or partition in kafka does not exists. Please POST atleast 1 entry to /recieve endpoint before starting consumer.
 
 ## API Endpoints
 

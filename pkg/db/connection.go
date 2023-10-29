@@ -2,22 +2,15 @@ package database
 
 import (
 	"context"
-	"fmt"
 	"log"
-	"os"
 
-	"github.com/joho/godotenv"
+	"github.com/goofynugtz/kafka-producer-consumer/pkg/config"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func DatabaseInit() *mongo.Client {
-	if err := godotenv.Load(); err != nil {
-		fmt.Println("No .env file found")
-	}
-	mongoURI := os.Getenv("MONGODB_URI")
-	
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(mongoURI))
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(config.Env.MONGODB_URI))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -25,8 +18,9 @@ func DatabaseInit() *mongo.Client {
 }
 
 var Client *mongo.Client = DatabaseInit()
+var ProductCollection *mongo.Collection = OpenCollection(Client, "products")
 
 func OpenCollection(client *mongo.Client, collectionName string) *mongo.Collection {
-	var collection *mongo.Collection = client.Database("pc-kafka").Collection(collectionName)
+	var collection *mongo.Collection = client.Database(config.Env.DB_NAME).Collection(collectionName)
 	return collection
 }
